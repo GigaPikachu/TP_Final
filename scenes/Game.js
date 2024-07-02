@@ -30,11 +30,11 @@ export default class Game extends Phaser.Scene {
     // Sprites
     this.load.spritesheet("gato1", "./public/sprites/gato_spritesheet.png", {frameWidth: 32, frameHeight: 32, key: "black",});
     this.load.image("pez", "./public/sprites/pez.png");
-    this.load.image("manzana", "./public/sprites/manzana.png");
+    this.load.image("agua", "./public/sprites/agua.png");
 
     //sonidos
     this.load.audio("punto", "./public/audio/moneda.wav")
-    this.load.audio("salto", "./public/audio/moneda.wav")
+    this.load.audio("salto", "./public/audio/salto.wav")
   }
 
   create() {
@@ -53,7 +53,7 @@ export default class Game extends Phaser.Scene {
     this.pez.body.setSize(13, 10);
     this.pez.body.setAllowGravity(false);
 
-    this.manzanas = this.physics.add.group();
+    this.aguas = this.physics.add.group();
 
     // Evento cada 1 segundo
     this.time.addEvent({
@@ -89,7 +89,7 @@ export default class Game extends Phaser.Scene {
     this.physics.add.collider(this.gato, this.paredes, () => {this.gato.tocandoParedes = true;});
     this.physics.add.collider(this.gato, this.piso, () => {this.gato.tocandoPiso = true;});
     this.physics.add.overlap(this.gato,this.pez, this.collisionHandler, null, this);
-    this.physics.add.overlap(this.gato, this.manzanas, this.menos1vida, null, this);
+    this.physics.add.overlap(this.gato, this.aguas, this.menos1vida, null, this);
 
     // Control
     this.cursors = this.input.keyboard.createCursorKeys();
@@ -100,6 +100,9 @@ export default class Game extends Phaser.Scene {
   }
 
   update() {
+    if (this.gato.tocandoPiso && this.cursors.up.isDown){
+      this.salto.play();
+    }
     // Manejo del movimiento
     const { velocityX, velocityY, aceleracion } = handleMovement( this.gato, this.cursors );
     this.gato.setVelocityX(velocityX);
@@ -150,13 +153,13 @@ export default class Game extends Phaser.Scene {
   }
 
   onSecond() {// Cada un segundo
-    this.manzanas.create(Phaser.Math.Between(24, 192), 24, "manzana");
+    this.aguas.create(Phaser.Math.Between(24, 192), 24, "agua");
   }
 
-  menos1vida(gato, manzanas) {
+  menos1vida(gato, aguas) {
     this.cameras.main.shake(100, 0.02);
     if (this.vidas > 0) {
-      manzanas.destroy();
+      aguas.destroy();
       this.vidas--;
       this.num_vidas.setText("<".repeat(this.vidas));
     }

@@ -16,6 +16,9 @@ export default class pantalla_inicial extends Phaser.Scene {
     //background//
     this.load.image ("fondo", "./public/background/fondo.jpg");
     //background//
+
+    //sonidos
+    this.load.audio("seleccionar", "./public/audio/maullido.ogg")
   }
 
   create() {
@@ -25,6 +28,9 @@ export default class pantalla_inicial extends Phaser.Scene {
     //teclado
     this.enter = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
     this.cursors = this.input.keyboard.createCursorKeys();
+
+    //sonidas
+    this.seleccionar = this.sound.add("seleccionar");
 
     //texto
     if (this.idioma == "Espanol"){
@@ -102,6 +108,10 @@ export default class pantalla_inicial extends Phaser.Scene {
       if (this.enter.isDown) { //si precionan enter
         this.scene.start('configuraciones');
       }
+    }
+
+    if (this.enter.isDown) { //si precionan enter
+      this.seleccionar.play();
     }
   }
 }
